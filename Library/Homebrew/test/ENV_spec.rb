@@ -125,6 +125,11 @@ RSpec.describe "ENV" do
         subject.prepend_path "FOO", "/usr"
         expect(subject["FOO"]).to eq("/usr#{File::PATH_SEPARATOR}/usr/local")
       end
+
+      it "ignores system paths with trailing slashes" do
+        subject.prepend_path "FOO", "/usr/bin/"
+        expect(subject).not_to have_key("FOO")
+      end
     end
 
     describe "#compiler" do
