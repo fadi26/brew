@@ -119,12 +119,13 @@ module SharedEnvExtension
   # Prepending a system path such as /usr/bin is a no-op so that requirements
   # don't accidentally override superenv shims or formulae's `bin` directories.
   # <pre>ENV.prepend_path "PATH", which("emacs").dirname</pre>
-  sig { params(key: String, path: T.any(String, Pathname)).void }
-  def prepend_path(key, path)
-    return if %w[/usr/bin /bin /usr/sbin /sbin].include? path.to_s
+    sig { params(key: String, path: T.any(String, Pathname)).void }
+    def prepend_path(key, path)
+      sanitized_path = path.to_s.chomp("/")
+      return if %w[/usr/bin /bin /usr/sbin /sbin].include? sanitized_path
 
-    self[key] = PATH.new(self[key]).prepend(path)
-  end
+      self[key] = PATH.new(self[key]).prepend(path)
+    end
 
   sig { params(key: String, path: T.any(String, Pathname)).void }
   def prepend_create_path(key, path)
